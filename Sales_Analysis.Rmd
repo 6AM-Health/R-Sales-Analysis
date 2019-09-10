@@ -1,0 +1,484 @@
+---
+title: "Sales Analysis"
+author: "Cristian"
+date: "9/8/2019"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load the Packages, data, and make the necessary changes to the columns 
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(scales)
+#read the data
+byte_fridges         = read_csv("Byte_Fridges.csv")
+#assign a data type 
+byte_fridges$Product = as.factor(byte_fridges$Product)
+#adjust date format 
+byte_fridges$Date    = as.Date(byte_fridges$Date,"%m/%d/%y")
+#see the data 
+glimpse(byte_fridges)
+#view the list of products
+AM_products          = unique(byte_fridges$Product)
+print(AM_products)
+```
+
+Here we select the SLS-Products we want to look into 
+
+```{r}
+#List of the SLS products of interest 
+SLS_Products        = c("Dark Chocolate PB Cups","DrinkSimple Maple Water", "Atomic Coffee - Cold Brew", "Bottle Water",
+                         "Coconut Water", "Kind Bars", "Kombucha", "Krave Beef Jerky", "Love Corn", 
+                         "Sparkling Raspberry Maple Water", "Trail Mix Pack Cranberry", "Tru Energy", "Wonderful Pistachios",
+                         "SmartSweets Gummy Bears", "Sparkling Water", "Lifeway Kefir", "6AM Health Juice - Cleanse", 
+                         "6AM Health Juice - Immune", "Dirty Lemon Water")
+#Filter by the target products 
+byte_fridges        = filter(byte_fridges, Product %in% SLS_Products)
+#see the data 
+glimpse(byte_fridges)
+```
+First we subset by date then we look at the 
+Take a look at the table with SLS products sorted from largest units sales to the lowest 
+```{r, echo=FALSE}
+#subset the first week 
+June_Week1                  = byte_fridges                            %>%
+                              subset(Date> "2019-06-08" & Date < "2019-06-14") 
+#group by store name and product 
+June_Week1_location_sales = June_Week1                                   %>%
+                            group_by(`Store Name`, Product)              %>%
+                            summarise(Total_Unit_Sales    = sum(Qty))    %>%
+                            arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product sales by location')
+print(as.data.frame(June_Week1_location_sales))
+cat("\n")
+#group by store name and product  
+June_Week1_Summary        = June_Week1                                   %>% 
+                              group_by(Product)                          %>% 
+                              summarise(TotaL_Sales = sum(Total),
+                                        Total_Unit_Sales = sum(Qty))     %>% 
+                              arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product and Aggregate sales')
+print(as.data.frame(June_Week1_Summary))
+cat("\n")
+June_Week1_plot           = ggplot(June_Week1 )                                                                            +
+                              geom_bar(aes(x = Date, y = Qty, color = Product), alpha = 0.6, size = 0.6, stat= "identity")     +
+                              labs(x= "Date", y = "Total Units Sold", title = "June 6th - June 14th: Sales for SLS Stable Products")             +
+                              scale_x_date(breaks = date_breaks("1 day"), labels = date_format("%m-%d"))                      +
+                              scale_y_continuous(breaks = seq(1, 100, 1))  +
+                              theme(axis.text.x = element_text(angle = 60, hjust = 1))
+June_Week1_plot
+```
+
+```{r, echo=FALSE}
+June_Week2                = byte_fridges                                 %>%
+                              subset(Date> "2019-06-15" & Date < "2019-06-21") 
+#group by store name and product 
+June_Week2_location_sales = June_Week2                                   %>%
+                            group_by(`Store Name`, Product)              %>%
+                            summarise(Total_Unit_Sales    = sum(Qty))    %>%
+                            arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product sales by location')
+print(as.data.frame(June_Week2_location_sales))
+cat("\n")
+#group by store name and product  
+June_Week2_Summary        = June_Week2                                   %>% 
+                              group_by(Product)                          %>% 
+                              summarise(TotaL_Sales = sum(Total),
+                                        Total_Unit_Sales = sum(Qty))     %>% 
+                              arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product and Aggregate sales')
+print(as.data.frame(June_Week2_Summary))
+cat("\n")
+June_Week2_plot           = ggplot(June_Week2 )                                                                            +
+                              geom_bar(aes(x = Date, y = Qty, color = Product), alpha = 0.6, size = 0.6, stat= "identity")     +
+                              labs(x= "Date", y = "Total Units Sold", title = "June 15th - June 21st: Sales for SLS Stable Products")             +
+                              scale_x_date(breaks = date_breaks("1 day"), labels = date_format("%m-%d"))                      +
+                              scale_y_continuous(breaks = seq(1, 100, 1))  +
+                              theme(axis.text.x = element_text(angle = 60, hjust = 1))
+June_Week2_plot
+```
+
+```{r,echo=FALSE}
+June_Week3                = byte_fridges                               %>%
+                              subset(Date> "2019-06-22" & Date < "2019-06-28") 
+#group by store name and product 
+June_Week3_location_sales = June_Week3                                   %>%
+                            group_by(`Store Name`, Product)              %>%
+                            summarise(Total_Unit_Sales    = sum(Qty))    %>%
+                            arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product sales by location')
+print(as.data.frame(June_Week3_location_sales))
+cat("\n")
+#group by store name and product  
+June_Week3_Summary        = June_Week3                                   %>% 
+                              group_by(Product)                          %>% 
+                              summarise(TotaL_Sales = sum(Total),
+                                        Total_Unit_Sales = sum(Qty))     %>% 
+                              arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product and Aggregate sales')
+print(as.data.frame(June_Week3_Summary))
+cat("\n")
+June_Week3_plot           = ggplot(June_Week3 )                                                                            +
+                              geom_bar(aes(x = Date, y = Qty, color = Product), alpha = 0.6, size = 0.6, stat= "identity")     +
+                              labs(x= "Date", y = "Total Units Sold", title = "June 22nd - June 28th: Sales for SLS Stable Products")             +
+                              scale_x_date(breaks = date_breaks("1 day"), labels = date_format("%m-%d"))                      +
+                              scale_y_continuous(breaks = seq(1, 100, 1))  +
+                              theme(axis.text.x = element_text(angle = 60, hjust = 1))
+June_Week3_plot
+```
+
+```{r,echo=FALSE}
+July_Week4                = byte_fridges                              %>%
+                              subset(Date> "2019-06-29" & Date < "2019-07-05") 
+#group by store name and product 
+July_Week4_location_sales = July_Week4                                   %>%
+                            group_by(`Store Name`, Product)              %>%
+                            summarise(Total_Unit_Sales    = sum(Qty))    %>%
+                            arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product sales by location')
+print(as.data.frame(July_Week4_location_sales))
+cat("\n")
+#group by store name and product  
+July_Week4_Summary        = July_Week4                                   %>% 
+                              group_by(Product)                          %>% 
+                              summarise(TotaL_Sales = sum(Total),
+                                        Total_Unit_Sales = sum(Qty))     %>% 
+                              arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product and Aggregate sales')
+print(as.data.frame(July_Week4_Summary))
+cat("\n")
+July_Week4_plot           = ggplot(July_Week4 )                                                                            +
+                              geom_bar(aes(x = Date, y = Qty, color = Product), alpha = 0.6, size = 0.6, stat= "identity")     +
+                              labs(x= "Date", y = "Total Units Sold", title = "June 28th - July 5th: Sales for SLS Stable Products")             +
+                              scale_x_date(breaks = date_breaks("1 day"), labels = date_format("%m-%d"))                      +
+                              scale_y_continuous(breaks = seq(1, 100, 1))  +
+                              theme(axis.text.x = element_text(angle = 60, hjust = 1))
+July_Week4_plot
+```
+
+```{r}
+July_Week5                = byte_fridges                              %>%
+                              subset(Date> "2019-07-06" & Date < "2019-07-12") 
+#group by store name and product 
+July_Week5_location_sales = July_Week5                                   %>%
+                            group_by(`Store Name`, Product)              %>%
+                            summarise(Total_Unit_Sales    = sum(Qty))    %>%
+                            arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product sales by location')
+print(as.data.frame(July_Week5_location_sales))
+cat("\n")
+#group by store name and product  
+July_Week5_Summary        = July_Week5                                   %>% 
+                              group_by(Product)                          %>% 
+                              summarise(TotaL_Sales = sum(Total),
+                                        Total_Unit_Sales = sum(Qty))     %>% 
+                              arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product and Aggregate sales')
+print(as.data.frame(July_Week5_Summary))
+cat("\n")
+July_Week5_plot           = ggplot(July_Week5 )                                                                            +
+                              geom_bar(aes(x = Date, y = Qty, color = Product), alpha = 0.6, size = 0.6, stat= "identity")     +
+                              labs(x= "Date", y = "Total Units Sold", title = "July 6th - July 12th: Sales for SLS Stable Products")             +
+                              scale_x_date(breaks = date_breaks("1 day"), labels = date_format("%m-%d"))                      +
+                              scale_y_continuous(breaks = seq(1, 100, 1))  +
+                              theme(axis.text.x = element_text(angle = 60, hjust = 1))
+July_Week5_plot
+```
+
+```{r}
+July_Week6                = byte_fridges                               %>%
+                              subset(Date> "2019-07-13" & Date < "2019-07-19") 
+#group by store name and product 
+July_Week6_location_sales = July_Week6                                   %>%
+                            group_by(`Store Name`, Product)              %>%
+                            summarise(Total_Unit_Sales    = sum(Qty))    %>%
+                            arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product sales by location')
+print(as.data.frame(July_Week6_location_sales))
+cat("\n")
+#group by store name and product  
+July_Week6_Summary        = July_Week6                                   %>% 
+                              group_by(Product)                          %>% 
+                              summarise(TotaL_Sales = sum(Total),
+                                        Total_Unit_Sales = sum(Qty))     %>% 
+                              arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product and Aggregate sales')
+print(as.data.frame(July_Week6_Summary))
+cat("\n")
+July_Week6_plot           = ggplot(July_Week6 )                                                                            +
+                              geom_bar(aes(x = Date, y = Qty, color = Product), alpha = 0.6, size = 0.6, stat= "identity")     +
+                              labs(x= "Date", y = "Total Units Sold", title = "July 13th - July 19th: Sales for SLS Stable Products")             +
+                              scale_x_date(breaks = date_breaks("1 day"), labels = date_format("%m-%d"))                      +
+                              scale_y_continuous(breaks = seq(1, 100, 1))  +
+                              theme(axis.text.x = element_text(angle = 60, hjust = 1))
+July_Week6_plot
+```
+
+```{r}
+July_Week7                = byte_fridges                              %>%
+                              subset(Date> "2019-07-20" & Date < "2019-07-26") 
+#group by store name and product 
+July_Week7_location_sales = July_Week7                                   %>%
+                            group_by(`Store Name`, Product)              %>%
+                            summarise(Total_Unit_Sales    = sum(Qty))    %>%
+                            arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product sales by location')
+print(as.data.frame(July_Week7_location_sales))
+cat("\n")
+#group by store name and product  
+July_Week7_Summary        = July_Week7                                   %>% 
+                              group_by(Product)                          %>% 
+                              summarise(TotaL_Sales = sum(Total),
+                                        Total_Unit_Sales = sum(Qty))     %>% 
+                              arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product and Aggregate sales')
+print(as.data.frame(July_Week7_Summary))
+cat("\n")
+July_Week7_plot           = ggplot(July_Week7 )                                                                            +
+                              geom_bar(aes(x = Date, y = Qty, color = Product), alpha = 0.6, size = 0.6, stat= "identity")     +
+                              labs(x= "Date", y = "Total Units Sold", title = "July 20th - July 26th: Sales for SLS Stable Products")             +
+                              scale_x_date(breaks = date_breaks("1 day"), labels = date_format("%m-%d"))                      +
+                              scale_y_continuous(breaks = seq(1, 100, 1))  +
+                              theme(axis.text.x = element_text(angle = 60, hjust = 1))
+July_Week7_plot
+```
+```{r}
+July_ALL                = byte_fridges                                %>%
+                              subset(Date> "2019-07-01" & Date < "2019-07-31") 
+#group by store name and product 
+July_ALL_location_sales = July_ALL                                  %>%
+                            group_by(`Store Name`, Product)              %>%
+                            summarise(Total_Unit_Sales    = sum(Qty))    %>%
+                            arrange(desc(`Store Name`))
+print('This is the breakdown of SLS Product sales by location')
+print(as.data.frame(July_ALL_location_sales))
+cat("\n")
+#group by store name and product  
+July_ALL_Summary        = July_ALL                                   %>% 
+                              group_by(Product)                          %>% 
+                              summarise(TotaL_Sales = sum(Total),
+                                        Total_Unit_Sales = sum(Qty))     %>% 
+                              arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product and Aggregate sales')
+print(as.data.frame(July_ALL_Summary))
+cat("\n")
+July_ALL_plot           = ggplot(July_ALL)                                                                            +
+                              geom_bar(aes(x = Date, y = Qty, color = Product), alpha = 0.6, size = 0.6, stat= "identity")     +
+                              labs(x= "Date", y = "Total Units Sold", title = "July 1st - July 31st: Sales for SLS Stable Products")             +
+                              scale_x_date(breaks = date_breaks("1 day"), labels = date_format("%m-%d"))                      +
+                              scale_y_continuous(breaks = seq(1, 100, 1))  +
+                              theme(axis.text.x = element_text(angle = 60, hjust = 1))
+July_ALL_plot
+```
+
+```{r}
+August_Week8                = byte_fridges                            %>%
+                              subset(Date> "2019-07-27" & Date < "2019-08-03") 
+#group by store name and product 
+August_Week8_location_sales = August_Week8                                  %>%
+                            group_by(`Store Name`, Product)              %>%
+                            summarise(Total_Unit_Sales    = sum(Qty))    %>%
+                            arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product sales by location')
+print(as.data.frame(August_Week8_location_sales))
+cat("\n")
+#group by store name and product  
+August_Week8_Summary        = August_Week8                                   %>% 
+                              group_by(Product)                          %>% 
+                              summarise(TotaL_Sales = sum(Total),
+                                        Total_Unit_Sales = sum(Qty))     %>% 
+                              arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product and Aggregate sales')
+print(as.data.frame(August_Week8_Summary))
+cat("\n")
+August_Week8_plot           = ggplot(August_Week8)                                                                            +
+                              geom_bar(aes(x = Date, y = Qty, color = Product), alpha = 0.6, size = 0.6, stat= "identity")     +
+                              labs(x= "Date", y = "Total Units Sold", title = "July 27th - August 3nd: Sales for SLS Stable Products")             +
+                              scale_x_date(breaks = date_breaks("1 day"), labels = date_format("%m-%d"))                      +
+                              scale_y_continuous(breaks = seq(1, 100, 1))  +
+                              theme(axis.text.x = element_text(angle = 60, hjust = 1))
+August_Week8_plot
+```
+
+```{r}
+August_Week9                = byte_fridges                            %>%
+                              subset(Date> "2019-08-04" & Date < "2019-08-10") 
+##group by store name and product 
+August_Week9_location_sales = August_Week9                                  %>%
+                            group_by(`Store Name`, Product)              %>%
+                            summarise(Total_Unit_Sales    = sum(Qty))    %>%
+                            arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product sales by location')
+print(as.data.frame(August_Week9_location_sales))
+cat("\n")
+#group by store name and product  
+August_Week9_Summary        = August_Week9                                   %>% 
+                              group_by(Product)                          %>% 
+                              summarise(TotaL_Sales = sum(Total),
+                                        Total_Unit_Sales = sum(Qty))     %>% 
+                              arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product and Aggregate sales')
+print(as.data.frame(August_Week9_Summary))
+cat("\n")
+August_Week9_plot           = ggplot(August_Week9)                                                                            +
+                              geom_bar(aes(x = Date, y = Qty, color = Product), alpha = 0.6, size = 0.6, stat= "identity")     +
+                              labs(x= "Date", y = "Total Units Sold", title = "August 4th - August 10th: Sales for SLS Stable Products")             +
+                              scale_x_date(breaks = date_breaks("1 day"), labels = date_format("%m-%d"))                      +
+                              scale_y_continuous(breaks = seq(1, 100, 1))  +
+                              theme(axis.text.x = element_text(angle = 60, hjust = 1))
+August_Week9_plot
+```
+
+```{r}
+August_Week10                = byte_fridges                           %>%
+                              subset(Date> "2019-08-11" & Date < "2019-08-17") 
+##group by store name and product 
+August_Week10_location_sales = August_Week10                                  %>%
+                            group_by(`Store Name`, Product)              %>%
+                            summarise(Total_Unit_Sales    = sum(Qty))    %>%
+                            arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product sales by location')
+print(as.data.frame(August_Week10_location_sales))
+cat("\n")
+#group by store name and product  
+August_Week10_Summary        = August_Week10                                   %>% 
+                              group_by(Product)                          %>% 
+                              summarise(TotaL_Sales = sum(Total),
+                                        Total_Unit_Sales = sum(Qty))     %>% 
+                              arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product and Aggregate sales')
+print(as.data.frame(August_Week10_Summary))
+cat("\n")
+August_Week10_plot           = ggplot(August_Week10)                                                                            +
+                              geom_bar(aes(x = Date, y = Qty, color = Product), alpha = 0.6, size = 0.6, stat= "identity")     +
+                              labs(x= "Date", y = "Total Units Sold", title = "August 11th - August 17th: Sales for SLS Stable Products")             +
+                              scale_x_date(breaks = date_breaks("1 day"), labels = date_format("%m-%d"))                      +
+                              scale_y_continuous(breaks = seq(1, 100, 1))  +
+                              theme(axis.text.x = element_text(angle = 60, hjust = 1))
+August_Week10_plot
+```
+
+```{r}
+August_Week11                = byte_fridges                           %>%
+                              subset(Date> "2019-08-18" & Date < "2019-08-24") 
+##group by store name and product 
+August_Week11_location_sales = August_Week11                                  %>%
+                            group_by(`Store Name`, Product)              %>%
+                            summarise(Total_Unit_Sales    = sum(Qty))    %>%
+                            arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product sales by location')
+print(as.data.frame(August_Week11_location_sales))
+cat("\n")
+#group by store name and product  
+August_Week11_Summary        = August_Week11                                   %>% 
+                              group_by(Product)                          %>% 
+                              summarise(TotaL_Sales = sum(Total),
+                                        Total_Unit_Sales = sum(Qty))     %>% 
+                              arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product and Aggregate sales')
+print(as.data.frame(August_Week11_Summary))
+cat("\n")
+August_Week11_plot           = ggplot(August_Week11)                                                                            +
+                              geom_bar(aes(x = Date, y = Qty, color = Product), alpha = 0.6, size = 0.6, stat= "identity")     +
+                              labs(x= "Date", y = "Total Units Sold", title = "August 18th - August 24th: Sales for SLS Stable Products")             +
+                              scale_x_date(breaks = date_breaks("1 day"), labels = date_format("%m-%d"))                      +
+                              scale_y_continuous(breaks = seq(1, 100, 1))  +
+                              theme(axis.text.x = element_text(angle = 60, hjust = 1))
+August_Week11_plot
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+August_Week12                = byte_fridges                           %>%
+                              subset(Date> "2019-08-25" & Date < "2019-08-31") 
+##group by store name and product 
+August_Week12_location_sales = August_Week12                                  %>%
+                            group_by(`Store Name`, Product)              %>%
+                            summarise(Total_Unit_Sales    = sum(Qty))    %>%
+                            arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product sales by location')
+print(as.data.frame(August_Week12_location_sales))
+cat("\n")
+#group by store name and product  
+August_Week12_Summary        = August_Week12                                   %>% 
+                              group_by(Product)                          %>% 
+                              summarise(TotaL_Sales = sum(Total),
+                                        Total_Unit_Sales = sum(Qty))     %>% 
+                              arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product and Aggregate sales')
+print(as.data.frame(August_Week12_Summary))
+cat("\n")
+August_Week12_plot           = ggplot(August_Week12)                                                                            +
+                              geom_bar(aes(x = Date, y = Qty, color = Product), alpha = 0.6, size = 0.6, stat= "identity")     +
+                              labs(x= "Date", y = "Total Units Sold", title = "August 25th - August 31st: Sales for SLS Stable Products")+
+                              scale_x_date(breaks = date_breaks("1 day"), labels = date_format("%m-%d"))                      +
+                              scale_y_continuous(breaks = seq(1, 100, 1))  +
+                              theme(axis.text.x = element_text(angle = 60, hjust = 1))
+August_Week12_plot
+```
+
+```{r}
+August_Week13                = byte_fridges                           %>%
+                              subset(Date> "2019-09-01" & Date < "2019-09-07") 
+##group by store name and product 
+August_Week13_location_sales = August_Week13                                  %>%
+                            group_by(`Store Name`, Product)              %>%
+                            summarise(Total_Unit_Sales    = sum(Qty))    %>%
+                            arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product sales by location')
+print(as.data.frame(August_Week13_location_sales))
+cat("\n")
+#group by store name and product  
+August_Week13_Summary        = August_Week13                                   %>% 
+                              group_by(Product)                          %>% 
+                              summarise(TotaL_Sales = sum(Total),
+                                        Total_Unit_Sales = sum(Qty))     %>% 
+                              arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product and Aggregate sales')
+print(as.data.frame(August_Week13_Summary))
+cat("\n")
+August_Week13_plot           = ggplot(August_Week13)                                                                            +
+                              geom_bar(aes(x = Date, y = Qty, color = Product), alpha = 0.6, size = 0.6, stat= "identity")     +
+                              labs(x= "Date", y = "Total Units Sold", title = "September 1st - September 7th: Sales for SLS Stable Products")             +
+                              scale_x_date(breaks = date_breaks("1 day"), labels = date_format("%m-%d"))                      +
+                              scale_y_continuous(breaks = seq(1, 100, 1))  +
+                              theme(axis.text.x = element_text(angle = 60, hjust = 1))
+August_Week13_plot
+```
+
+```{r}
+August_ALL                = byte_fridges                              %>%
+                              subset(Date> "2019-08-01" & Date < "2019-08-31") 
+##group by store name and product 
+August_ALL_location_sales = August_ALL                                  %>%
+                            group_by(`Store Name`, Product)              %>%
+                            summarise(Total_Unit_Sales    = sum(Qty))    %>%
+                            arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product sales by location')
+print(as.data.frame(August_ALL_location_sales))
+cat("\n")
+#group by store name and product  
+August_ALL_Summary        = August_ALL                                   %>% 
+                              group_by(Product)                          %>% 
+                              summarise(TotaL_Sales = sum(Total),
+                                        Total_Unit_Sales = sum(Qty))     %>% 
+                              arrange(desc(Total_Unit_Sales))
+print('This is the breakdown of SLS Product and Aggregate sales')
+print(as.data.frame(August_ALL_Summary))
+cat("\n")
+August_ALL_plot           = ggplot(August_ALL)                                                                            +
+                              geom_bar(aes(x = Date, y = Qty, color = Product), alpha = 0.6, size = 0.6, stat= "identity")     +
+                              labs(x= "Date", y = "Total Units Sold", title = "August 1st - August 31st: Sales for SLS Stable Products")             +
+                              scale_x_date(breaks = date_breaks("1 day"), labels = date_format("%m-%d"))                      +
+                              scale_y_continuous(breaks = seq(1, 100, 1))  +
+                              theme(axis.text.x = element_text(angle = 60, hjust = 1))
+August_ALL_plot
+```
+
